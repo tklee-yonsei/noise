@@ -13,11 +13,12 @@ def add_gaussian_noise():
     # Mock response: add Gaussian noise (fixed example)
     noisy_signal = []
     for point in encoded_signal:
-        I = point["I"] + round(random.gauss(0, noise_level), 3)
-        Q = point["Q"] + round(random.gauss(0, noise_level), 3)
+        I = 1
+        Q = 2
         noisy_signal.append({"I": I, "Q": Q})
     
     response = {"noisy_signal": noisy_signal}
+    print(response)
     return jsonify(response)
 
 # Uniform noise mock endpoint
