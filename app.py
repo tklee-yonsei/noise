@@ -1,43 +1,39 @@
 from flask import Flask, jsonify, request
-import random
+
+from noise.gaussian import GaussianNoiseAdder
+from noise.uniform import UniformNoiseAdder
 
 app = Flask(__name__)
 
-# Gaussian noise mock endpoint
-@app.route("/add_noise/gaussian", methods=["POST"])
-def add_gaussian_noise():
-    data = request.json
-    encoded_signal = data["encoded_signal"]
-    noise_level = data["noise_level"]
-    
-    # Mock response: add Gaussian noise (fixed example)
-    noisy_signal = []
-    for point in encoded_signal:
-        I = 1
-        Q = 2
-        noisy_signal.append({"I": I, "Q": Q})
-    
-    response = {"noisy_signal": noisy_signal}
-    print(response)
-    return jsonify(response)
+# 노이즈 방법 매핑 - 클래스 자체를 저장
+noise_adder_classes = {
+    "gaussian": GaussianNoiseAdder,
+    "uniform": UniformNoiseAdder,
+}
 
-# Uniform noise mock endpoint
-@app.route("/add_noise/uniform", methods=["POST"])
-def add_uniform_noise():
-    data = request.json
-    encoded_signal = data["encoded_signal"]
-    noise_range = data["noise_range"]
-    
-    # Mock response: add Uniform noise (fixed example)
-    noisy_signal = []
-    for point in encoded_signal:
-        I = point["I"] + round(random.uniform(noise_range[0], noise_range[1]), 3)
-        Q = point["Q"] + round(random.uniform(noise_range[0], noise_range[1]), 3)
-        noisy_signal.append({"I": I, "Q": Q})
-    
-    response = {"noisy_signal": noisy_signal}
-    return jsonify(response)
+
+@app.route("/add_noise/<method>", methods=["POST"])
+def add_noise(method):
+    noise_adder_class = noise_adder_classes.get(method)
+    if noise_adder_class is None:
+        return jsonify({"error_code": 3001, "error": "Invalid noise method"}), 400
+
+    # 요청마다 인스턴스 생성
+    noise_adder = noise_adder_class()
+
+    symbols_real_imag = request.json.get("symbols")
+    if symbols_real_imag is None:
+        return jsonify({"error_code": 3002, "error": "Missing symbols data"}), 400
+
+    snr_db = request.json.get("snr_db", 10)
+
+    try:
+        noisy_symbols_real_imag = noise_adder.process_request(symbols_real_imag, snr_db)
+    except ValueError as e:
+        return jsonify({"error_code": 3003, "error": str(e)}), 400
+
+    return jsonify({"noisy_symbols": noisy_symbols_real_imag})
+
 
 if __name__ == "__main__":
-    # Flask 서버 실행
-    app.run(host="0.0.0.0", port=5003)
+    app.run(port=5003)

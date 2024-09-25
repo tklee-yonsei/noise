@@ -1,4 +1,4 @@
-# Team 3 - Noise Addition API
+# 팀 3 - 노이즈 API 문서
 
 이 문서는 팀 3의 노이즈 추가 API에 대한 설명을 제공합니다. API는 두 가지 노이즈 유형(가우시안 노이즈와 균일 노이즈)을 신호에 추가하는 기능을 제공합니다.
 
@@ -16,13 +16,25 @@
 - **Body**:
     ```json
     {
-      "encoded_signal": [
-        {"I": 0.707, "Q": 0.707},
-        {"I": -0.707, "Q": 0.707},
-        {"I": -0.707, "Q": -0.707},
-        {"I": 0.707, "Q": -0.707}
+      "symbols": [
+        [
+          -1.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0
+        ],
+        [
+          -1.0,
+          -1.0
+        ]
       ],
-      "noise_level": 0.1
+      "snr_db": 10
     }
     ```
 
@@ -32,11 +44,23 @@
 - **Body**:
     ```json
     {
-      "noisy_signal": [
-        {"I": 0.807, "Q": 0.657},
-        {"I": -0.707, "Q": 0.857},
-        {"I": -0.607, "Q": -0.907},
-        {"I": 0.757, "Q": -0.657}
+      "noisy_symbols": [
+        [
+          -1.1030480607008906,
+          -1.120369890649259
+        ],
+        [
+          -1.3260931328994576,
+          0.9760636214747762
+        ],
+        [
+          1.3581396365712213,
+          1.198680955050817
+        ],
+        [
+          -0.651732392847555,
+          -0.6672753280757961
+        ]
       ]
     }
     ```
@@ -53,13 +77,25 @@
 - **Body**:
     ```json
     {
-      "encoded_signal": [
-        {"I": 0.707, "Q": 0.707},
-        {"I": -0.707, "Q": 0.707},
-        {"I": -0.707, "Q": -0.707},
-        {"I": 0.707, "Q": -0.707}
+      "symbols": [
+        [
+          -1.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0
+        ],
+        [
+          -1.0,
+          -1.0
+        ]
       ],
-      "noise_range": [-0.1, 0.1]
+      "snr_db": 10
     }
     ```
 
@@ -69,48 +105,67 @@
 - **Body**:
     ```json
     {
-      "noisy_signal": [
-        {"I": 0.607, "Q": 0.807},
-        {"I": -0.757, "Q": 0.657},
-        {"I": -0.657, "Q": -0.607},
-        {"I": 0.657, "Q": -0.807}
+      "noisy_symbols": [
+        [
+          -0.8466725757707981,
+          -1.0
+        ],
+        [
+          -0.3674053305959475,
+          1.0
+        ],
+        [
+          1.0357426410391966,
+          1.0
+        ],
+        [
+          -1.0551227598178854,
+          -1.0
+        ]
       ]
     }
     ```
 
-## Getting Started
+## 시작하기
 
-### Local Development
+이 섹션에서는 다양한 환경에서 전처리 서버를 설정하고, 
+실행하는 방법에 대한 지침을 제공합니다.
 
-To run the preprocessing server in a local development environment, ensure you have Docker installed and use the provided Dockerfile to build and run the server.
+### 로컬 개발
 
-1. **Build the Docker image**:
+로컬 개발 환경에서 전처리 서버를 실행하려면, 
+Docker가 설치되어 있는지 확인하고, 
+제공된 Dockerfile을 사용하여 서버를 빌드하고 실행하세요.
+
+1. **Docker 이미지 빌드**:
     ```bash
     docker build -f Dockerfile.dev -t dev-noise-server .
     ```
 
-2. **Run the Docker container**:
+2. **Docker 컨테이너 실행**:
     ```bash
     docker run -p 5003:5003 -v $(pwd):/app --rm --name container__dev-noise-server dev-noise-server
     ```
 
-The server will be available on `http://localhost:5001`.
+서버는 `http://localhost:5003`에서 사용할 수 있습니다.
 
 ### mock
 
-To run the preprocessing server in a mock environment, ensure you have Docker installed and use the provided Dockerfile to build and run the server.
+mock 환경에서 전처리 서버를 실행하려면, 
+Docker가 설치되어 있는지 확인하고, 
+제공된 Dockerfile을 사용하여 서버를 빌드하고 실행하세요.
 
-1. **Build the Docker image**:
+1. **Docker 이미지 빌드**:
     ```bash
     docker build -f Dockerfile.mock -t mock-noise-server .
     ```
 
-2. **Run the Docker container**:
+2. **Docker 컨테이너 실행**:
     ```bash
     docker run -p 6003:6003 --rm --name container__mock-noise-server mock-noise-server
     ```
 
-The server will be available on `http://localhost:6003`.
+서버는 `http://localhost:6003`에서 사용할 수 있습니다.
 
 ## License
 
