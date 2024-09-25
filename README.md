@@ -126,6 +126,12 @@
     }
     ```
 
+## 에러
+
+- **3001**: Invalid noise method
+- **3002**: Missing symbols data
+- **3003**: Invalid symbols data format
+
 ## 시작하기
 
 이 섹션에서는 다양한 환경에서 전처리 서버를 설정하고, 
